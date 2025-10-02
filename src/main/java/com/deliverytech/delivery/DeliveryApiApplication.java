@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DeliveryApiApplication {
 
 	public static void main(String[] args) {
+		System.out.println("Delivery API Application started");
 		SpringApplication.run(DeliveryApiApplication.class, args);
 	}
 
