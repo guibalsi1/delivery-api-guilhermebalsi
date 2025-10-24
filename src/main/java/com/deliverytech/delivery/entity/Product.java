@@ -26,7 +26,7 @@ public class Product {
     private String image;
     private String category;
     private int quantity;
-    private boolean active;
+    @Column(name = "product_rating")
     private BigDecimal rating;
     @Enumerated(EnumType.STRING)
     private ProductStatus isActive;

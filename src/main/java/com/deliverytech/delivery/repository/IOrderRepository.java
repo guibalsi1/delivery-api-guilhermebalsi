@@ -1,4 +1,8 @@
 package com.deliverytech.delivery.repository;
 
-public interface IOrderRepository {
+import com.deliverytech.delivery.dto.order.OrderDTO;
+import com.deliverytech.delivery.entity.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IOrderRepository extends JpaRepository<Order, Long> {
 }

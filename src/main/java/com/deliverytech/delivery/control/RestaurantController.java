@@ -1,11 +1,13 @@
 package com.deliverytech.delivery.control;
 
 
-import com.deliverytech.delivery.dto.RestaurantDTO;
-import com.deliverytech.delivery.service.IRestaurantService;
+import com.deliverytech.delivery.dto.restaurant.RestaurantDTO;
+import com.deliverytech.delivery.dto.restaurant.RestaurantResponseDTO;
+import com.deliverytech.delivery.service.restaurant.IRestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,11 @@ public class RestaurantController {
                 )
             }
     )
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
-    public ResponseEntity<List<RestaurantDTO>> list() {
-        List<RestaurantDTO> restaurants = restaurantService.getAllRestaurants();
-        return ResponseEntity.status(HttpStatus.CREATED).body(restaurants);
+    public ResponseEntity<List<RestaurantResponseDTO>> list() {
+        List<RestaurantResponseDTO> restaurants = restaurantService.getAllRestaurants();
+        return ResponseEntity.status(HttpStatus.OK).body(restaurants);
     }
 
     @Operation(
@@ -56,9 +59,33 @@ public class RestaurantController {
                 )
             }
     )
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
-    public ResponseEntity<RestaurantDTO> create(@Valid @RequestBody RestaurantDTO restaurantDTO) {
-        RestaurantDTO restaurant = restaurantService.createRestaurant(restaurantDTO);
+    public ResponseEntity<RestaurantResponseDTO> create(@Valid @RequestBody RestaurantDTO restaurantDTO) {
+        RestaurantResponseDTO restaurant = restaurantService.createRestaurant(restaurantDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(restaurant);
+    }
+
+
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping(value = "/{restaurantId}")
+    public ResponseEntity<RestaurantResponseDTO> getRestaurant(@Valid @PathVariable("restaurantId") Long restaurantId) {
+        RestaurantResponseDTO restaurant = restaurantService.getRestaurant(restaurantId);
+        return ResponseEntity.status(HttpStatus.OK).body(restaurant);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @PutMapping(value = "/{restaurantId}" )
+    public ResponseEntity<RestaurantResponseDTO> updateRestaurant(@PathVariable("restaurantId") Long restaurantId,
+                                                          @Valid @RequestBody RestaurantDTO restaurantDTO) {
+        RestaurantResponseDTO updatedRestaurant = restaurantService.updateRestaurant(restaurantId, restaurantDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedRestaurant);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping(value = "/{restaurantId}" )
+    public ResponseEntity<Void> deleteRestaurant(@PathVariable("restaurantId") Long restaurantId) {
+        restaurantService.deleteRestaurant(restaurantId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
