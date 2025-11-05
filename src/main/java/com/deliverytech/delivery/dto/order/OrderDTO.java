@@ -1,7 +1,7 @@
 package com.deliverytech.delivery.dto.order;
 
 
-import com.deliverytech.delivery.dto.OrderItemDTO;
+import com.deliverytech.delivery.dto.orderItem.OrderItemDTO;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

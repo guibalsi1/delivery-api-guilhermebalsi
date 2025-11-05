@@ -6,6 +6,7 @@ import com.deliverytech.delivery.dto.Client.ClientResponseDTO;
 import com.deliverytech.delivery.entity.Client;
 import com.deliverytech.delivery.exception.BusinessException;
 import com.deliverytech.delivery.repository.IClientRepository;
+import com.deliverytech.delivery.service.cep.CepService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,25 @@ public class ClientService implements IClientService {
     @Autowired
     private IClientRepository clientRepository;
 
+    @Autowired
+    private CepService cepService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     public ClientService() {
         super();
     }
 
     @Override
     public List<ClientResponseDTO> getAllClients() {
-        ModelMapper modelMapper = new ModelMapper();
         List<Client> clients = clientRepository.findAll();
+        return Arrays.asList(modelMapper.map(clients, ClientResponseDTO[].class));
+    }
+
+    @Override
+    public List<ClientResponseDTO> getAllActiveClients() {
+        List<Client> clients = clientRepository.findAllByActiveTrue();
         return Arrays.asList(modelMapper.map(clients, ClientResponseDTO[].class));
     }
 
@@ -34,18 +46,20 @@ public class ClientService implements IClientService {
         if (clientRepository.existsByEmail(clientDTO.getEmail())) {
             throw new BusinessException("Email já cadastrado: " + clientDTO.getEmail());
         }
-        ModelMapper modelMapper = new ModelMapper();
         Client entity = modelMapper.map(clientDTO, Client.class);
+        entity.setActive(true);
+        var location = cepService.getCepLocation(clientDTO.getCep());
+        entity.setLatitude(location.latitude());
+        entity.setLongitude(location.longitude());
         Client client = clientRepository.save(entity);
         return modelMapper.map(client, ClientResponseDTO.class);
     }
 
     @Override
     public ClientResponseDTO updateClient(Long clientId, ClientDTO clientDTO) {
-        ModelMapper modelMapper = new ModelMapper();
         Client client = clientRepository.findById(clientId).orElse(null);
         if (client == null) {
-            return null;
+            throw new BusinessException("Client not found with id: " + clientId);
         }
         modelMapper.map(clientDTO, client);
         client = clientRepository.save(client);
@@ -54,19 +68,37 @@ public class ClientService implements IClientService {
 
     @Override
     public ClientResponseDTO getClient(Long clientId) {
-        ModelMapper modelMapper = new ModelMapper();
-        return clientRepository.findById(clientId).map(client -> modelMapper.map(client, ClientResponseDTO.class)).orElse(null);
+        return clientRepository.findById(clientId).map(client -> modelMapper.map(client, ClientResponseDTO.class))
+                .orElseThrow(() -> new BusinessException("Client not found with id: " + clientId));
     }
 
     @Override
     public void deleteClient(Long clientId) {
-        clientRepository.deleteById(clientId);
+        if (!clientRepository.existsByIdAndActiveTrue(clientId)) {
+            throw new BusinessException("Client not found with id: " + clientId);
+        }
+        Client client = clientRepository.findById(clientId).orElseThrow(
+                () -> new BusinessException("Client not found with id: " + clientId)
+        );
+        client.setActive(false);
+        clientRepository.save(client);
     }
 
     @Override
-    public ClientResponseDTO searchByEmail(String email) {
-        ModelMapper modelMapper = new ModelMapper();
-        var client = clientRepository.findClientByEmail(email);
+    public ClientResponseDTO findByEmail(String email) {
+        var client = clientRepository.findClientByEmailAndActiveTrue(email).orElseThrow(
+                () -> new BusinessException("Client not found with email: " + email)
+        );
         return modelMapper.map(client, ClientResponseDTO.class);
+    }
+
+    public boolean existsByIdAndActiveTrue(Long clientId) {
+        return clientRepository.existsByIdAndActiveTrue(clientId);
+    }
+
+    @Override
+    public List<ClientResponseDTO> searchClientByName(String name) {
+        List<Client> clients = clientRepository.searchClientByNameContainingIgnoreCase(name);
+        return Arrays.asList(modelMapper.map(clients, ClientResponseDTO[].class));
     }
 }

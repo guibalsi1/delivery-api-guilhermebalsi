@@ -14,6 +14,7 @@ public class OrderResponseDTO {
     private Long restaurantId;
     private String deliveryAddress;
     private String status;
+    private String subTotal;
     private String totalPrice;
     private LocalDateTime date;
     private OrderStatus orderStatus;

@@ -22,9 +22,15 @@ public class Client {
     private String name;
     @Column(nullable = false, name = "client_email")
     private String email;
+    @Column(nullable = false, name = "cep_client")
+    private String cep;
+    @Column(nullable = false, name = "client_address")
+    private String address;
     @Column(nullable = false)
     private String cpf;
-    @Column(nullable = false, name = "client_phone")
+    private Double latitude;
+    private Double longitude;
+    @Column(name = "client_phone")
     private String phone;
     private String image;
     @Column(name = "client_rating")

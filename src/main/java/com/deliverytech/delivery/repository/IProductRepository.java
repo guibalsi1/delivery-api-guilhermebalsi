@@ -23,4 +23,8 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByRestaurantAndIsActive(Restaurant restaurant, ProductStatus isActive);
 
     List<Product> findAllByRestaurant_IdAndIsActive(Long restaurantId, ProductStatus productStatus);
+
+    boolean existsByIdAndIsActive(Long id, ProductStatus isActive);
+
+    boolean existsByRestaurant_Id(Long restaurantId);
 }

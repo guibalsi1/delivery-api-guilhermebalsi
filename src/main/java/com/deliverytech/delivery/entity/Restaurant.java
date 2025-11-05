@@ -35,10 +35,16 @@ public class Restaurant {
     private String image;
     @Column(length = 8, nullable = false)
     private String cep;
+    private Double latitude;
+    private Double longitude;
     @Column(name = "restaurant_address", length = 200)
     private String address;
     @Column(nullable = false, length = 14)
     private String cnpj;
+    @Column(name = "delivery_fee", nullable = false)
+    private BigDecimal deliveryFee;
+    @Column(name = "delivery_km_fee")
+    private BigDecimal deliveryKmFee;
     @Column(name = "restaurant_phone", length = 10)
     private String phone;
     @ElementCollection
@@ -56,4 +62,7 @@ public class Restaurant {
     private List<Order> orders;
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Version
+    private Long version;
 }

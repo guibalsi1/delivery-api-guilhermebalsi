@@ -8,6 +8,9 @@ public class ClientResponseDTO {
     private String name;
     private String email;
     private String phone;
+    private String cep;
+    private double longitude;
+    private double latitude;
     private String address;
     private String cpf;
     private String image;

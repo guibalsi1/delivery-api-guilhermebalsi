@@ -30,6 +30,10 @@ public class Product {
     private BigDecimal rating;
     @Enumerated(EnumType.STRING)
     private ProductStatus isActive;
+
+    @Version
+    private Long version;
+
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;

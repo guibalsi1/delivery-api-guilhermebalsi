@@ -3,6 +3,7 @@ package com.deliverytech.delivery.dto.restaurant;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.util.Map;
 
@@ -18,6 +19,10 @@ public class RestaurantResponseDTO {
     private String cuisine;
     private String address;
     private String cnpj;
+    private Double latitude;
+    private Double longitude;
+    private BigDecimal deliveryFee;
+    private BigDecimal deliveryKmFee;
     private String phone;
     private Map<DayOfWeek,WorkHoursDTO> workHours;
 }

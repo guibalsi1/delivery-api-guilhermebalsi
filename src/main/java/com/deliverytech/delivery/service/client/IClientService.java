@@ -10,9 +10,12 @@ import java.util.List;
 @Service
 public interface IClientService {
     List<ClientResponseDTO> getAllClients();
+    List<ClientResponseDTO> getAllActiveClients();
     ClientResponseDTO createClient(ClientDTO clientDTO);
     ClientResponseDTO updateClient(Long clientId, ClientDTO clientDTO);
     ClientResponseDTO getClient(Long clientId);
     void deleteClient(Long clientId);
-    ClientResponseDTO searchByEmail(@Valid String email);
+    ClientResponseDTO findByEmail(@Valid String email);
+    boolean existsByIdAndActiveTrue(Long clientId);
+    List<ClientResponseDTO> searchClientByName(String name);
 }
