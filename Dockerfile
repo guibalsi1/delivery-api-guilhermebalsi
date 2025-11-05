@@ -1,8 +1,8 @@
 # Stage 1: Build
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY ../../../delivery-test/pom.xml .
-COPY ../../../delivery-test/src ./src
+COPY ../../../delivery-api-guilhermebalsi/pom.xml .
+COPY ../../../delivery-api-guilhermebalsi/src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run
